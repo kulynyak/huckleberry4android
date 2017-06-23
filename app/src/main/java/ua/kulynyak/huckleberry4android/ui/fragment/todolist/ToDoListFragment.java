@@ -6,7 +6,6 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Loader;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,12 +18,16 @@ import dagger.android.AndroidInjection;
 import ua.kulynyak.huckleberry4android.R;
 import ua.kulynyak.huckleberry4android.domain.ToDoTask;
 import ua.kulynyak.huckleberry4android.domain.ToDoTaskRepository;
+import ua.kulynyak.huckleberry4android.ui.activity.MainActivity;
+import ua.kulynyak.huckleberry4android.ui.commons.ItemClickSupport;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.util.List;
 
 public class ToDoListFragment extends Fragment
     implements LoaderManager.LoaderCallbacks<List<ToDoTask>> {
+  private static final int LOADER_ID = 1;
   @Inject
   ToDoTaskRepository repository;
 
@@ -48,6 +51,16 @@ public class ToDoListFragment extends Fragment
     rvToDoList = (RecyclerView) rootView.findViewById(R.id.rvToDoList);
     rvToDoList.setVisibility(View.VISIBLE);
     rvToDoList.setAdapter(adapter = new ToDoListAdapter());
+    ItemClickSupport.addTo(rvToDoList)
+        .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+          @Override
+          public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+            ToDoTask task = adapter.getItemAt(position);
+            if (task != null) {
+              showDetailsForPosition(task);
+            }
+          }
+        });
     return rootView;
   }
 
@@ -78,12 +91,13 @@ public class ToDoListFragment extends Fragment
 
   private void loadToDoList() {
     onStartLoading();
-    getLoaderManager().initLoader(1, null, this).forceLoad();
+    getLoaderManager().initLoader(LOADER_ID, null, this).forceLoad();
   }
 
   private void onToDoTasksLoaded(List<ToDoTask> toDoTasks) {
     adapter.setTasks(toDoTasks);
     onFinishLoading();
+    getLoaderManager().destroyLoader(LOADER_ID);
   }
 
   @Override
@@ -119,5 +133,9 @@ public class ToDoListFragment extends Fragment
         }
       });
     }
+  }
+
+  private void showDetailsForPosition(@Nullable ToDoTask task) {
+    ((MainActivity) getActivity()).showDetailFragment(task, false);
   }
 }

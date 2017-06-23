@@ -9,6 +9,7 @@ import android.widget.TextView;
 import ua.kulynyak.huckleberry4android.R;
 import ua.kulynyak.huckleberry4android.domain.ToDoTask;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
@@ -55,6 +56,14 @@ public class ToDoListAdapter extends RecyclerView.Adapter<ToDoListAdapter.ViewHo
   @Override
   public int getItemCount() {
     return tasks.size() == 0 ? 1 : tasks.size();
+  }
+
+  @Nullable
+  public ToDoTask getItemAt(int position) {
+    if (tasks.size() > position) {
+      return tasks.get(position);
+    }
+    return null;
   }
 
   @Override

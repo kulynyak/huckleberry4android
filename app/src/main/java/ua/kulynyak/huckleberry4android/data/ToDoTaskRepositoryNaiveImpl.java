@@ -30,7 +30,7 @@ public class ToDoTaskRepositoryNaiveImpl implements ToDoTaskRepository {
 
   @Override
   public void add(@Nonnull ToDoTask toDoTask) {
-    list.add(toDoTask);
+    list.add(new ToDoTask(toDoTask));
   }
 
   @Override
@@ -52,9 +52,10 @@ public class ToDoTaskRepositoryNaiveImpl implements ToDoTaskRepository {
         task.setTitle(toDoTask.getTitle());
         task.setDescription(toDoTask.getDescription());
         task.setDone(toDoTask.isDone());
-        break;
+        return;
       }
     }
+    add(toDoTask);
   }
 
   @Override

@@ -1,4 +1,10 @@
 <resources>
   <string name="app_name">huckleberry4android</string>
   <string name="no_to_do_tasks">No to do tasks</string>
+  <string name="title">Title</string>
+  <string name="is_done">is done</string>
+  <string name="description">Description</string>
+  <string name="edit">Edit</string>
+  <string name="save">Save</string>
+  <string name="delete">Delete</string>
 </resources>
