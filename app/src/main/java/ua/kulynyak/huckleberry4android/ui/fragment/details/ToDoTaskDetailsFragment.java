@@ -1,6 +1,5 @@
 package ua.kulynyak.huckleberry4android.ui.fragment.details;
 
-import android.app.Fragment;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,17 +9,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import dagger.android.AndroidInjection;
 import ua.kulynyak.huckleberry4android.R;
 import ua.kulynyak.huckleberry4android.domain.ToDoTask;
-import ua.kulynyak.huckleberry4android.domain.ToDoTaskRepository;
 import ua.kulynyak.huckleberry4android.ui.commons.UiUtils;
+import ua.kulynyak.huckleberry4android.ui.fragment.BaseFragment;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.inject.Inject;
 
-public class ToDoTaskDetailsFragment extends Fragment {
+public class ToDoTaskDetailsFragment extends BaseFragment {
 
   private static final int VIEW_BG_COLOR = Color.parseColor("#FFFFFF");
   private static final int EDIT_BG_COLOR = Color.parseColor("#EEEEEE");
@@ -32,9 +29,6 @@ public class ToDoTaskDetailsFragment extends Fragment {
   private static final String TASK_TITLE = "title";
   private static final String TASK_DESCRIPTION = "description";
   private static final String TASK_IS_DONE = "isDone";
-
-  @Inject
-  ToDoTaskRepository repository;
 
   private EditText etTitle;
   private CheckBox cbDone;
@@ -104,7 +98,6 @@ public class ToDoTaskDetailsFragment extends Fragment {
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
-    AndroidInjection.inject(this);
     super.onCreate(savedInstanceState);
     Bundle args = getArguments();
     if ((args != null && args.getBoolean(INITIALIZE))) {

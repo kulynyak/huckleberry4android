@@ -1,6 +1,5 @@
 package ua.kulynyak.huckleberry4android.ui.fragment.todolist;
 
-import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
@@ -14,32 +13,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import com.android.internal.util.Predicate;
-import dagger.android.AndroidInjection;
 import ua.kulynyak.huckleberry4android.R;
 import ua.kulynyak.huckleberry4android.domain.ToDoTask;
 import ua.kulynyak.huckleberry4android.domain.ToDoTaskRepository;
 import ua.kulynyak.huckleberry4android.ui.activity.MainActivity;
 import ua.kulynyak.huckleberry4android.ui.commons.ItemClickSupport;
+import ua.kulynyak.huckleberry4android.ui.fragment.BaseFragment;
 
 import javax.annotation.Nullable;
-import javax.inject.Inject;
 import java.util.List;
 
-public class ToDoListFragment extends Fragment
+public class ToDoListFragment extends BaseFragment
     implements LoaderManager.LoaderCallbacks<List<ToDoTask>> {
   private static final int LOADER_ID = 1;
-  @Inject
-  ToDoTaskRepository repository;
 
   private ProgressBar progressBar;
   private RecyclerView rvToDoList;
   private ToDoListAdapter adapter;
-
-  @Override
-  public void onCreate(@Nullable Bundle savedInstanceState) {
-    AndroidInjection.inject(this);
-    super.onCreate(savedInstanceState);
-  }
 
   @Nullable
   @Override
