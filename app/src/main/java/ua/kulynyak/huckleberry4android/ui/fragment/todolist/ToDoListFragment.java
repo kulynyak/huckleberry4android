@@ -5,6 +5,7 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Loader;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -66,6 +67,13 @@ public class ToDoListFragment extends BaseFragment
             }
           }
         });
+    FloatingActionButton fabAddItem = (FloatingActionButton) rootView.findViewById(R.id.fabAddItem);
+    fabAddItem.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        ((MainActivity) getActivity()).showDetailFragment(null, true);
+      }
+    });
     return rootView;
   }
 
