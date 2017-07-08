@@ -5,6 +5,8 @@ import dagger.Component;
 import dagger.android.support.AndroidSupportInjectionModule;
 import ua.kulynyak.huckleberry4android.App;
 import ua.kulynyak.huckleberry4android.ui.activity.di.MainActivityModule;
+import ua.kulynyak.huckleberry4android.ui.fragment.details.ToDoTaskDetailsFragment;
+import ua.kulynyak.huckleberry4android.ui.fragment.details.ToDoTaskDetailsPresenter;
 import ua.kulynyak.huckleberry4android.ui.fragment.details.di.ToDoTaskDetailsModule;
 import ua.kulynyak.huckleberry4android.ui.fragment.todolist.di.ToDoListModule;
 
@@ -33,4 +35,9 @@ public interface AppComponent {
   }
 
   void inject(App app);
+
+  void inject(ToDoTaskDetailsFragment fragment);
+
+  @Singleton
+  void inject(ToDoTaskDetailsPresenter presenter);
 }
