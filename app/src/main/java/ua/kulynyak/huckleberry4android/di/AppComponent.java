@@ -7,7 +7,6 @@ import ua.kulynyak.huckleberry4android.App;
 import ua.kulynyak.huckleberry4android.ui.activity.di.MainActivityModule;
 import ua.kulynyak.huckleberry4android.ui.fragment.details.ToDoTaskDetailsFragment;
 import ua.kulynyak.huckleberry4android.ui.fragment.details.ToDoTaskDetailsPresenter;
-import ua.kulynyak.huckleberry4android.ui.fragment.details.di.ToDoTaskDetailsModule;
 import ua.kulynyak.huckleberry4android.ui.fragment.todolist.di.ToDoListModule;
 
 import javax.inject.Singleton;
@@ -20,8 +19,7 @@ import javax.inject.Singleton;
     AndroidSupportInjectionModule.class,
     AppModule.class,
     MainActivityModule.class,
-    ToDoListModule.class,
-    ToDoTaskDetailsModule.class
+    ToDoListModule.class
 })
 public interface AppComponent {
 
