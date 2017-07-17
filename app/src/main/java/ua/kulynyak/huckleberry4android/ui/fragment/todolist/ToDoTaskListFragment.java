@@ -1,9 +1,5 @@
 package ua.kulynyak.huckleberry4android.ui.fragment.todolist;
 
-import android.app.LoaderManager;
-import android.content.AsyncTaskLoader;
-import android.content.Context;
-import android.content.Loader;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -13,29 +9,28 @@ import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.*;
 import android.widget.ProgressBar;
-import com.android.internal.util.Predicate;
+import com.arellomobile.mvp.MvpFragment;
+import com.arellomobile.mvp.presenter.InjectPresenter;
 import ua.kulynyak.huckleberry4android.R;
 import ua.kulynyak.huckleberry4android.domain.ToDoTask;
-import ua.kulynyak.huckleberry4android.domain.ToDoTaskRepository;
 import ua.kulynyak.huckleberry4android.ui.activity.MainActivity;
 import ua.kulynyak.huckleberry4android.ui.commons.ItemClickSupport;
-import ua.kulynyak.huckleberry4android.ui.fragment.BaseFragment;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ToDoListFragment extends BaseFragment
-    implements LoaderManager.LoaderCallbacks<List<ToDoTask>> {
-  private static final int LOADER_ID = 1;
+public class ToDoTaskListFragment extends MvpFragment implements ToDoTaskListView {
 
 
   private static final String SEARCH_STATE_KEY = "huckleberrySearchStateKey";
   private static final String SEARCH_QUERY_KEY = "huckleberrySearchQueryKey";
   private static final String SEARCH_SUBMITTED_KEY = "huckleberrySearchSubmittedKey";
 
+  @InjectPresenter
+  ToDoTaskListPresenter presenter;
+
   private ProgressBar progressBar;
   private RecyclerView rvToDoList;
-  private ToDoListAdapter adapter;
   private SearchView searchView;
   private String searchQuery;
   private boolean searchSubmitted;
@@ -56,22 +51,19 @@ public class ToDoListFragment extends BaseFragment
     progressBar.setVisibility(View.GONE);
     rvToDoList = (RecyclerView) rootView.findViewById(R.id.rvToDoList);
     rvToDoList.setVisibility(View.VISIBLE);
-    rvToDoList.setAdapter(adapter = new ToDoListAdapter());
+    rvToDoList.setAdapter(new ToDoListAdapter());
     ItemClickSupport.addTo(rvToDoList)
         .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
           @Override
           public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-            ToDoTask task = adapter.getItemAt(position);
-            if (task != null) {
-              showDetailsForTask(task);
-            }
+            presenter.showTask(position, false);
           }
         });
     FloatingActionButton fabAddItem = (FloatingActionButton) rootView.findViewById(R.id.fabAddItem);
     fabAddItem.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        ((MainActivity) getActivity()).showDetailFragment(null, true);
+        presenter.showTask(-1, true);
       }
     });
     return rootView;
@@ -88,7 +80,12 @@ public class ToDoListFragment extends BaseFragment
   @Override
   public void onResume() {
     super.onResume();
-    loadToDoList();
+    presenter.reloadTasks();
+  }
+
+  @Override
+  public void onListLoaded(List<ToDoTask> tasks) {
+    ((ToDoListAdapter) rvToDoList.getAdapter()).setTasks(tasks);
   }
 
   public void onStartLoading() {
@@ -101,55 +98,9 @@ public class ToDoListFragment extends BaseFragment
     progressBar.setVisibility(View.GONE);
   }
 
-  private void loadToDoList() {
-    onStartLoading();
-    getLoaderManager().initLoader(LOADER_ID, null, this).forceLoad();
-  }
-
-  private void onToDoTasksLoaded(List<ToDoTask> toDoTasks) {
-    adapter.setTasks(toDoTasks);
-    adapter.getFilter().filter(searchQuery);
-    onFinishLoading();
-    getLoaderManager().destroyLoader(LOADER_ID);
-  }
-
   @Override
-  public Loader<List<ToDoTask>> onCreateLoader(int id, Bundle args) {
-    return new ToDoTasksLoader(getActivity(), repository);
-  }
-
-  @Override
-  public void onLoadFinished(Loader<List<ToDoTask>> loader, List<ToDoTask> toDoTasks) {
-    onToDoTasksLoaded(toDoTasks);
-  }
-
-  @Override
-  public void onLoaderReset(Loader<List<ToDoTask>> loader) {
-    onToDoTasksLoaded(null);
-  }
-
-  private static class ToDoTasksLoader extends AsyncTaskLoader<List<ToDoTask>> {
-
-    ToDoTaskRepository repository;
-
-    ToDoTasksLoader(Context context, ToDoTaskRepository repository) {
-      super(context);
-      this.repository = repository;
-    }
-
-    @Override
-    public List<ToDoTask> loadInBackground() {
-      return repository.query(new Predicate<ToDoTask>() {
-        @Override
-        public boolean apply(ToDoTask toDoTask) {
-          return true;
-        }
-      });
-    }
-  }
-
-  private void showDetailsForTask(ToDoTask task) {
-    ((MainActivity) getActivity()).showDetailFragment(task, false);
+  public void onShowTask(ToDoTask task, boolean edit) {
+    ((MainActivity) getActivity()).showDetailFragment(task, edit);
   }
 
   @Override
@@ -226,7 +177,7 @@ public class ToDoListFragment extends BaseFragment
       @Override
       public boolean onQueryTextChange(String newText) {
         searchSubmitted = false;
-        adapter.getFilter().filter(newText);
+        presenter.loadTasks(newText);
         return true;
       }
     });

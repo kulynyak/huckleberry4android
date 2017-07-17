@@ -11,7 +11,7 @@ import dagger.android.HasFragmentInjector;
 import ua.kulynyak.huckleberry4android.R;
 import ua.kulynyak.huckleberry4android.domain.ToDoTask;
 import ua.kulynyak.huckleberry4android.ui.fragment.details.ToDoTaskDetailsFragment;
-import ua.kulynyak.huckleberry4android.ui.fragment.todolist.ToDoListFragment;
+import ua.kulynyak.huckleberry4android.ui.fragment.todolist.ToDoTaskListFragment;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements HasFragmentInject
     setContentView(R.layout.activity_main);
     if (savedInstanceState == null) {
       getFragmentManager().beginTransaction()
-          .add(R.id.main_container, new ToDoListFragment(), TODO_TASK_LIST)
+          .add(R.id.main_container, new ToDoTaskListFragment(), TODO_TASK_LIST)
           .commit();
     }
   }

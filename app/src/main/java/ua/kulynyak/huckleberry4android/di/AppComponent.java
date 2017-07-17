@@ -7,7 +7,7 @@ import ua.kulynyak.huckleberry4android.App;
 import ua.kulynyak.huckleberry4android.ui.activity.di.MainActivityModule;
 import ua.kulynyak.huckleberry4android.ui.fragment.details.ToDoTaskDetailsFragment;
 import ua.kulynyak.huckleberry4android.ui.fragment.details.ToDoTaskDetailsPresenter;
-import ua.kulynyak.huckleberry4android.ui.fragment.todolist.di.ToDoListModule;
+import ua.kulynyak.huckleberry4android.ui.fragment.todolist.ToDoTaskListPresenter;
 
 import javax.inject.Singleton;
 
@@ -18,8 +18,7 @@ import javax.inject.Singleton;
 @Component(modules = {
     AndroidSupportInjectionModule.class,
     AppModule.class,
-    MainActivityModule.class,
-    ToDoListModule.class
+    MainActivityModule.class
 })
 public interface AppComponent {
 
@@ -38,4 +37,7 @@ public interface AppComponent {
 
   @Singleton
   void inject(ToDoTaskDetailsPresenter presenter);
+
+  @Singleton
+  void inject(ToDoTaskListPresenter presenter);
 }

@@ -7,7 +7,6 @@ import ua.kulynyak.huckleberry4android.App;
 import ua.kulynyak.huckleberry4android.data.ToDoTaskRepositoryNaiveImpl;
 import ua.kulynyak.huckleberry4android.domain.ToDoTaskRepository;
 import ua.kulynyak.huckleberry4android.ui.activity.di.MainActivitySubComponent;
-import ua.kulynyak.huckleberry4android.ui.fragment.todolist.di.ToDoListFragmentSubComponent;
 
 import javax.inject.Singleton;
 
@@ -15,8 +14,7 @@ import javax.inject.Singleton;
  * Application module refers to subcomponents, provides application level dependencies.
  */
 @Module(subcomponents = {
-    MainActivitySubComponent.class,
-    ToDoListFragmentSubComponent.class
+    MainActivitySubComponent.class
 })
 public class AppModule {
 
