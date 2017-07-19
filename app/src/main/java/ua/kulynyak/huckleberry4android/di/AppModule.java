@@ -6,16 +6,13 @@ import dagger.Provides;
 import ua.kulynyak.huckleberry4android.App;
 import ua.kulynyak.huckleberry4android.data.ToDoTaskRepositoryNaiveImpl;
 import ua.kulynyak.huckleberry4android.domain.ToDoTaskRepository;
-import ua.kulynyak.huckleberry4android.ui.activity.di.MainActivitySubComponent;
 
 import javax.inject.Singleton;
 
 /**
  * Application module refers to subcomponents, provides application level dependencies.
  */
-@Module(subcomponents = {
-    MainActivitySubComponent.class
-})
+@Module
 public class AppModule {
 
   @Provides
