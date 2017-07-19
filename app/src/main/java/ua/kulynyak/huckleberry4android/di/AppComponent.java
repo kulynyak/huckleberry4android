@@ -3,6 +3,7 @@ package ua.kulynyak.huckleberry4android.di;
 import dagger.BindsInstance;
 import dagger.Component;
 import ua.kulynyak.huckleberry4android.App;
+import ua.kulynyak.huckleberry4android.ui.activity.ToDoTaskNavigationView;
 import ua.kulynyak.huckleberry4android.ui.fragment.details.ToDoTaskDetailsFragment;
 import ua.kulynyak.huckleberry4android.ui.fragment.details.ToDoTaskDetailsPresenter;
 import ua.kulynyak.huckleberry4android.ui.fragment.todolist.ToDoTaskListPresenter;
@@ -36,4 +37,7 @@ public interface AppComponent {
 
   @Singleton
   void inject(ToDoTaskListPresenter presenter);
+
+  @Singleton
+  void inject(ToDoTaskNavigationView presenter);
 }

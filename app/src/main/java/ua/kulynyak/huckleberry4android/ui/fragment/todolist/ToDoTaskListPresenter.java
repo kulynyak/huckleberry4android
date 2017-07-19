@@ -6,9 +6,11 @@ import android.util.Pair;
 import com.android.internal.util.Predicate;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import org.greenrobot.eventbus.EventBus;
 import ua.kulynyak.huckleberry4android.App;
 import ua.kulynyak.huckleberry4android.domain.ToDoTask;
 import ua.kulynyak.huckleberry4android.domain.ToDoTaskRepository;
+import ua.kulynyak.huckleberry4android.domain.bus.ShowToDoTaskDetailsFragmentAction;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -60,7 +62,7 @@ public class ToDoTaskListPresenter extends MvpPresenter<ToDoTaskListView> {
 
   public void showTask(int position, boolean edit) {
     ToDoTask task = position == -1 ? null : filteredTasks.get(position);
-    getViewState().onShowTask(task, edit);
+    EventBus.getDefault().post(new ShowToDoTaskDetailsFragmentAction(task, edit));
   }
 
   private static Pair<List<ToDoTask>, List<ToDoTask>> loadFromRepository(

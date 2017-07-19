@@ -12,14 +12,13 @@ import com.arellomobile.mvp.MvpFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import ua.kulynyak.huckleberry4android.R;
 import ua.kulynyak.huckleberry4android.domain.ToDoTask;
-import ua.kulynyak.huckleberry4android.ui.activity.MainActivity;
 import ua.kulynyak.huckleberry4android.ui.commons.ItemClickSupport;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class ToDoTaskListFragment extends MvpFragment
-    implements ToDoTaskListView, ToDoTasksSearchView {
+                                  implements ToDoTaskListView, ToDoTasksSearchView {
 
   @InjectPresenter
   ToDoTaskListPresenter presenter;
@@ -91,11 +90,6 @@ public class ToDoTaskListFragment extends MvpFragment
   public void onFinishLoading() {
     rvToDoList.setVisibility(View.VISIBLE);
     progressBar.setVisibility(View.GONE);
-  }
-
-  @Override
-  public void onShowTask(ToDoTask task, boolean edit) {
-    ((MainActivity) getActivity()).showDetailFragment(task, edit);
   }
 
   @Override
