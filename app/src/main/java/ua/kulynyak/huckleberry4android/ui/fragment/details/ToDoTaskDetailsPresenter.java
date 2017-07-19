@@ -1,11 +1,13 @@
 package ua.kulynyak.huckleberry4android.ui.fragment.details;
 
-import com.android.internal.util.Predicate;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import ua.kulynyak.huckleberry4android.App;
 import ua.kulynyak.huckleberry4android.domain.ToDoTask;
 import ua.kulynyak.huckleberry4android.domain.ToDoTaskRepository;
+import ua.kulynyak.huckleberry4android.domain.bus.ShowToDoTaskDetailsAction;
 
 import javax.inject.Inject;
 
@@ -25,12 +27,21 @@ public class ToDoTaskDetailsPresenter extends MvpPresenter<ToDoTaskDetailsView> 
 
   public ToDoTaskDetailsPresenter() {
     App.getAppComponent().inject(this);
+    EventBus.getDefault().register(this);
   }
 
-  public void showToDoTask(boolean editMode, ToDoTask task) {
-    this.editMode = editMode;
-    isNew = task == null;
-    toDoTask = isNew ? new ToDoTask("") : task;
+  @Override
+  public void onDestroy() {
+    EventBus.getDefault().unregister(this);
+    super.onDestroy();
+  }
+
+  @Subscribe(sticky = true)
+  public void onShowToDoTask(ShowToDoTaskDetailsAction action) {
+    EventBus.getDefault().removeStickyEvent(action);
+    editMode = action.editMode();
+    isNew = action.task() == null;
+    toDoTask = isNew ? new ToDoTask("") : action.task();
     getViewState().showToDoTask(toDoTask);
     getViewState().setMode(editMode, isNew);
   }
@@ -59,20 +70,5 @@ public class ToDoTaskDetailsPresenter extends MvpPresenter<ToDoTaskDetailsView> 
     isNew = false;
     editMode = false;
     getViewState().onToDoTaskDeleted();
-  }
-
-  private static class SingleTaskPredicate implements Predicate<ToDoTask> {
-
-    private final long taskId;
-
-    private SingleTaskPredicate(long taskId) {
-      this.taskId = taskId;
-    }
-
-    @Override
-    public boolean apply(ToDoTask toDoTask) {
-      return toDoTask.getId() == taskId;
-    }
-
   }
 }

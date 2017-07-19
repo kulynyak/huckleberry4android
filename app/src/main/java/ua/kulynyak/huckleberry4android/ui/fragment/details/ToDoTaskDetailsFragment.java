@@ -10,8 +10,10 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import com.arellomobile.mvp.MvpFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import org.greenrobot.eventbus.EventBus;
 import ua.kulynyak.huckleberry4android.R;
 import ua.kulynyak.huckleberry4android.domain.ToDoTask;
+import ua.kulynyak.huckleberry4android.domain.bus.ShowToDoTaskDetailsAction;
 import ua.kulynyak.huckleberry4android.ui.commons.UiUtils;
 
 import javax.annotation.Nullable;
@@ -20,12 +22,6 @@ public class ToDoTaskDetailsFragment extends MvpFragment implements ToDoTaskDeta
 
   private static final int VIEW_BG_COLOR = Color.parseColor("#FFFFFF");
   private static final int EDIT_BG_COLOR = Color.parseColor("#EEEEEE");
-
-  private static final String TASK_EDIT = "edit";
-  private static final String TASK_ID = "taskId";
-  private static final String TASK_TITLE = "title";
-  private static final String TASK_DESCRIPTION = "description";
-  private static final String TASK_IS_DONE = "isDone";
 
   @InjectPresenter
   ToDoTaskDetailsPresenter presenter;
@@ -38,15 +34,7 @@ public class ToDoTaskDetailsFragment extends MvpFragment implements ToDoTaskDeta
 
   public static ToDoTaskDetailsFragment initInstance(@Nullable ToDoTask task, boolean edit) {
     ToDoTaskDetailsFragment fragment = new ToDoTaskDetailsFragment();
-    Bundle args = new Bundle();
-    args.putBoolean(TASK_EDIT, edit);
-    if (task != null) {
-      args.putLong(TASK_ID, task.getId());
-      args.putBoolean(TASK_IS_DONE, task.isDone());
-      args.putString(TASK_TITLE, task.getTitle());
-      args.putString(TASK_DESCRIPTION, task.getDescription());
-    }
-    fragment.setArguments(args);
+    EventBus.getDefault().postSticky(new ShowToDoTaskDetailsAction(task, edit));
     return fragment;
   }
 
@@ -82,27 +70,6 @@ public class ToDoTaskDetailsFragment extends MvpFragment implements ToDoTaskDeta
       }
     });
     return rootView;
-  }
-
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    if (savedInstanceState == null) {
-      ToDoTask task = null;
-      boolean editMode = false;
-      Bundle args = getArguments();
-      if (args != null) {
-        editMode = args.getBoolean("edit", false);
-        long id = args.getLong(TASK_ID, 0);
-        if (id != 0) {
-          task = new ToDoTask(args.getString(TASK_TITLE))
-              .setDescription(args.getString(TASK_DESCRIPTION, ""))
-              .setDone(args.getBoolean(TASK_IS_DONE))
-              .setId(id);
-        }
-      }
-      presenter.showToDoTask(editMode, task);
-    }
   }
 
   private void moveCursorToTheEndOfText(EditText editText, boolean hasFocus) {
