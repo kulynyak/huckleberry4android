@@ -7,10 +7,14 @@ import com.android.internal.util.Predicate;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import ua.kulynyak.huckleberry4android.App;
 import ua.kulynyak.huckleberry4android.domain.ToDoTask;
 import ua.kulynyak.huckleberry4android.domain.ToDoTaskRepository;
 import ua.kulynyak.huckleberry4android.domain.bus.ShowToDoTaskDetailsFragmentAction;
+import ua.kulynyak.huckleberry4android.domain.bus.ToDoTaskCreatedAction;
+import ua.kulynyak.huckleberry4android.domain.bus.ToDoTaskDeletedAction;
+import ua.kulynyak.huckleberry4android.domain.bus.ToDoTaskUpdatedAction;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -29,16 +33,26 @@ public class ToDoTaskListPresenter extends MvpPresenter<ToDoTaskListView> {
 
   public ToDoTaskListPresenter() {
     App.getAppComponent().inject(this);
+    EventBus.getDefault().register(this);
   }
 
-  public void reloadTasks() {
-    // in this implementation we don't know what happened in ToDoTaskDetailsFragment
+  @Override
+  public void onDestroy() {
+    EventBus.getDefault().unregister(this);
+    super.onDestroy();
+  }
+
+  private void reloadTasks(Runnable onLoadDone) {
+    // in this implementation we reload tasks only if task created, updated or deleted
     tasks = null;
-    loadTasks(filterString);
+    loadTasks(filterString, onLoadDone);
   }
 
-  public void loadTasks(@Nonnull String filterStr) {
+  public void loadTasks(@Nonnull String filterStr, final Runnable onLoadDone) {
     if (tasks != null && filterString.equalsIgnoreCase(filterStr)) {
+      if (onLoadDone != null) {
+        onLoadDone.run();
+      }
       return;
     }
     getViewState().onStartLoading();
@@ -53,6 +67,9 @@ public class ToDoTaskListPresenter extends MvpPresenter<ToDoTaskListView> {
           @Override
           public void run() {
             onTasksFiltered(result.first, result.second);
+            if (onLoadDone != null) {
+              onLoadDone.run();
+            }
           }
         });
       }
@@ -96,5 +113,33 @@ public class ToDoTaskListPresenter extends MvpPresenter<ToDoTaskListView> {
     this.filteredTasks = filteredTasks;
     getViewState().onListLoaded(filteredTasks);
     getViewState().onFinishLoading();
+  }
+
+  @Subscribe
+  void onToDoTaskDeleted(ToDoTaskDeletedAction action) {
+    reloadTasks(null);
+  }
+
+  @Subscribe
+  void onToDoTaskCreated(ToDoTaskCreatedAction action) {
+    final long taskId = action.taskId();
+    reloadTasks(new Runnable() {
+      @Override
+      public void run() {
+        int position = 0;
+        for (ToDoTask task : filteredTasks) {
+          if (task.getId() == taskId) {
+            getViewState().onScrollToPosition(position);
+            break;
+          }
+          position++;
+        }
+      }
+    });
+  }
+
+  @Subscribe
+  void onToDoTaskUpdated(ToDoTaskUpdatedAction action) {
+    reloadTasks(null);
   }
 }

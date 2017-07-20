@@ -34,6 +34,9 @@ public class ToDoTaskListFragment extends MvpFragment
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setHasOptionsMenu(true);
+    if (savedInstanceState == null) {
+      presenter.loadTasks("", null);
+    }
   }
 
   @Nullable
@@ -72,12 +75,6 @@ public class ToDoTaskListFragment extends MvpFragment
   }
 
   @Override
-  public void onResume() {
-    super.onResume();
-    presenter.reloadTasks();
-  }
-
-  @Override
   public void onListLoaded(List<ToDoTask> tasks) {
     ((ToDoListAdapter) rvToDoList.getAdapter()).setTasks(tasks);
   }
@@ -94,7 +91,7 @@ public class ToDoTaskListFragment extends MvpFragment
 
   @Override
   public void onSearch(String searchQuery) {
-    presenter.loadTasks(searchQuery);
+    presenter.loadTasks(searchQuery, null);
   }
 
   @Override
@@ -114,6 +111,11 @@ public class ToDoTaskListFragment extends MvpFragment
     if (isSubmitted) {
       searchView.clearFocus();
     }
+  }
+
+  @Override
+  public void onScrollToPosition(int position) {
+    rvToDoList.getLayoutManager().scrollToPosition(position);
   }
 
   private void initSearchView(Menu menu) {

@@ -8,6 +8,9 @@ import ua.kulynyak.huckleberry4android.App;
 import ua.kulynyak.huckleberry4android.domain.ToDoTask;
 import ua.kulynyak.huckleberry4android.domain.ToDoTaskRepository;
 import ua.kulynyak.huckleberry4android.domain.bus.ShowToDoTaskDetailsAction;
+import ua.kulynyak.huckleberry4android.domain.bus.ToDoTaskCreatedAction;
+import ua.kulynyak.huckleberry4android.domain.bus.ToDoTaskDeletedAction;
+import ua.kulynyak.huckleberry4android.domain.bus.ToDoTaskUpdatedAction;
 
 import javax.inject.Inject;
 
@@ -61,14 +64,21 @@ public class ToDoTaskDetailsPresenter extends MvpPresenter<ToDoTaskDetailsView> 
     toDoTask.setDescription(description);
     toDoTask.setDone(done);
     repository.update(toDoTask);
-    isNew = false;
-    getViewState().onToDoTaskSaved();
+    if (isNew) {
+      isNew = false;
+      EventBus.getDefault().post(new ToDoTaskCreatedAction(toDoTask.getId()));
+      getViewState().onToDoTaskSaved();
+    } else {
+      EventBus.getDefault().post(new ToDoTaskUpdatedAction(toDoTask.getId()));
+      getViewState().onToDoTaskSaved();
+    }
   }
 
   public void deleteToDoTask() {
     repository.remove(toDoTask);
     isNew = false;
     editMode = false;
+    EventBus.getDefault().post(new ToDoTaskDeletedAction(toDoTask.getId()));
     getViewState().onToDoTaskDeleted();
   }
 }

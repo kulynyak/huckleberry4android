@@ -2,6 +2,7 @@ package ua.kulynyak.huckleberry4android.ui.fragment.todolist;
 
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
+import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 import ua.kulynyak.huckleberry4android.domain.ToDoTask;
 
@@ -15,5 +16,8 @@ public interface ToDoTaskListView extends MvpView {
   void onStartLoading();
 
   void onFinishLoading();
+
+  @StateStrategyType(OneExecutionStateStrategy.class)
+  void onScrollToPosition(int position);
 
 }
