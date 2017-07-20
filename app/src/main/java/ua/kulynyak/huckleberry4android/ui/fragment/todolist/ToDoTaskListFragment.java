@@ -12,13 +12,15 @@ import com.arellomobile.mvp.MvpFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import ua.kulynyak.huckleberry4android.R;
 import ua.kulynyak.huckleberry4android.domain.ToDoTask;
+import ua.kulynyak.huckleberry4android.ui.commons.BackButtonListener;
 import ua.kulynyak.huckleberry4android.ui.commons.ItemClickSupport;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class ToDoTaskListFragment extends MvpFragment
-                                  implements ToDoTaskListView, ToDoTasksSearchView {
+                                  implements ToDoTaskListView, ToDoTasksSearchView,
+                                             BackButtonListener {
 
   @InjectPresenter
   ToDoTaskListPresenter presenter;
@@ -149,5 +151,11 @@ public class ToDoTaskListFragment extends MvpFragment
       }
     });
     searchPresenter.restoreSearchViewState();
+  }
+
+  @Override
+  public boolean onBackPressed() {
+    presenter.onBackCommandClick();
+    return true;
   }
 }

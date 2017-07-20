@@ -57,4 +57,6 @@ dependencies {
   annotationProcessor "com.arello-mobile:moxy-compiler:1.5.3"
 
   compile "org.greenrobot:eventbus:3.0.0"
+
+  compile 'ru.terrakok.cicerone:cicerone:1.2.1'
 }

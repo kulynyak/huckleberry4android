@@ -2,6 +2,7 @@ package ua.kulynyak.huckleberry4android.ui.fragment.details;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +15,11 @@ import org.greenrobot.eventbus.EventBus;
 import ua.kulynyak.huckleberry4android.R;
 import ua.kulynyak.huckleberry4android.domain.ToDoTask;
 import ua.kulynyak.huckleberry4android.domain.bus.ShowToDoTaskDetailsAction;
+import ua.kulynyak.huckleberry4android.ui.commons.BackButtonListener;
 import ua.kulynyak.huckleberry4android.ui.commons.UiUtils;
 
-import javax.annotation.Nullable;
-
-public class ToDoTaskDetailsFragment extends MvpFragment implements ToDoTaskDetailsView {
+public class ToDoTaskDetailsFragment extends MvpFragment
+                                     implements ToDoTaskDetailsView, BackButtonListener {
 
   private static final int VIEW_BG_COLOR = Color.parseColor("#FFFFFF");
   private static final int EDIT_BG_COLOR = Color.parseColor("#EEEEEE");
@@ -148,4 +149,9 @@ public class ToDoTaskDetailsFragment extends MvpFragment implements ToDoTaskDeta
     lockButtons();
   }
 
+  @Override
+  public boolean onBackPressed() {
+    presenter.onBackCommandClick();
+    return true;
+  }
 }

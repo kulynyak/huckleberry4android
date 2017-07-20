@@ -4,6 +4,7 @@ import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import ru.terrakok.cicerone.Router;
 import ua.kulynyak.huckleberry4android.App;
 import ua.kulynyak.huckleberry4android.domain.ToDoTask;
 import ua.kulynyak.huckleberry4android.domain.ToDoTaskRepository;
@@ -16,6 +17,9 @@ import javax.inject.Inject;
 
 @InjectViewState
 public class ToDoTaskDetailsPresenter extends MvpPresenter<ToDoTaskDetailsView> {
+  @Inject
+  Router router;
+
   @Inject
   ToDoTaskRepository repository;
 
@@ -80,5 +84,9 @@ public class ToDoTaskDetailsPresenter extends MvpPresenter<ToDoTaskDetailsView> 
     editMode = false;
     EventBus.getDefault().post(new ToDoTaskDeletedAction(toDoTask.getId()));
     getViewState().onToDoTaskDeleted();
+  }
+
+  public void onBackCommandClick() {
+    router.exit();
   }
 }

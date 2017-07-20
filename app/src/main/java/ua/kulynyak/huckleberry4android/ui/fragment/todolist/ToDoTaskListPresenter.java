@@ -8,13 +8,15 @@ import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import ru.terrakok.cicerone.Router;
 import ua.kulynyak.huckleberry4android.App;
 import ua.kulynyak.huckleberry4android.domain.ToDoTask;
 import ua.kulynyak.huckleberry4android.domain.ToDoTaskRepository;
-import ua.kulynyak.huckleberry4android.domain.bus.ShowToDoTaskDetailsFragmentAction;
+import ua.kulynyak.huckleberry4android.domain.bus.ShowToDoTaskDetailsAction;
 import ua.kulynyak.huckleberry4android.domain.bus.ToDoTaskCreatedAction;
 import ua.kulynyak.huckleberry4android.domain.bus.ToDoTaskDeletedAction;
 import ua.kulynyak.huckleberry4android.domain.bus.ToDoTaskUpdatedAction;
+import ua.kulynyak.huckleberry4android.ui.commons.Screens;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -24,6 +26,10 @@ import java.util.List;
 
 @InjectViewState
 public class ToDoTaskListPresenter extends MvpPresenter<ToDoTaskListView> {
+
+  @Inject
+  Router router;
+
   @Inject
   ToDoTaskRepository repository;
 
@@ -79,7 +85,7 @@ public class ToDoTaskListPresenter extends MvpPresenter<ToDoTaskListView> {
 
   public void showTask(int position, boolean edit) {
     ToDoTask task = position == -1 ? null : filteredTasks.get(position);
-    EventBus.getDefault().post(new ShowToDoTaskDetailsFragmentAction(task, edit));
+    router.navigateTo(Screens.TODO_TASK_VIEW, new ShowToDoTaskDetailsAction(task, edit));
   }
 
   private static Pair<List<ToDoTask>, List<ToDoTask>> loadFromRepository(
@@ -113,6 +119,10 @@ public class ToDoTaskListPresenter extends MvpPresenter<ToDoTaskListView> {
     this.filteredTasks = filteredTasks;
     getViewState().onListLoaded(filteredTasks);
     getViewState().onFinishLoading();
+  }
+
+  public void onBackCommandClick() {
+    router.exit();
   }
 
   @Subscribe
