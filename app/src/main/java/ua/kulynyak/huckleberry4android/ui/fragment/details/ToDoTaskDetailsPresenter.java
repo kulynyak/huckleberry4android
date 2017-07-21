@@ -6,12 +6,14 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import ru.terrakok.cicerone.Router;
 import ua.kulynyak.huckleberry4android.App;
+import ua.kulynyak.huckleberry4android.R;
 import ua.kulynyak.huckleberry4android.domain.ToDoTask;
 import ua.kulynyak.huckleberry4android.domain.ToDoTaskRepository;
 import ua.kulynyak.huckleberry4android.domain.bus.ShowToDoTaskDetailsAction;
 import ua.kulynyak.huckleberry4android.domain.bus.ToDoTaskCreatedAction;
 import ua.kulynyak.huckleberry4android.domain.bus.ToDoTaskDeletedAction;
 import ua.kulynyak.huckleberry4android.domain.bus.ToDoTaskUpdatedAction;
+import ua.kulynyak.huckleberry4android.ui.commons.UiUtils;
 
 import javax.inject.Inject;
 
@@ -71,10 +73,8 @@ public class ToDoTaskDetailsPresenter extends MvpPresenter<ToDoTaskDetailsView> 
     if (isNew) {
       isNew = false;
       EventBus.getDefault().post(new ToDoTaskCreatedAction(toDoTask.getId()));
-      getViewState().onToDoTaskSaved();
     } else {
       EventBus.getDefault().post(new ToDoTaskUpdatedAction(toDoTask.getId()));
-      getViewState().onToDoTaskSaved();
     }
   }
 
@@ -83,7 +83,21 @@ public class ToDoTaskDetailsPresenter extends MvpPresenter<ToDoTaskDetailsView> 
     isNew = false;
     editMode = false;
     EventBus.getDefault().post(new ToDoTaskDeletedAction(toDoTask.getId()));
-    getViewState().onToDoTaskDeleted();
+  }
+
+  @Subscribe
+  void onToDoTaskCreated(ToDoTaskCreatedAction action) {
+    router.exitWithMessage(UiUtils.loadString(R.string.task_created));
+  }
+
+  @Subscribe
+  void onToDoTaskUpdated(ToDoTaskUpdatedAction action) {
+    router.exitWithMessage(UiUtils.loadString(R.string.task_updated));
+  }
+
+  @Subscribe
+  void onToDoTaskDeleted(ToDoTaskDeletedAction action) {
+    router.exitWithMessage(UiUtils.loadString(R.string.task_deleted));
   }
 
   public void onBackCommandClick() {

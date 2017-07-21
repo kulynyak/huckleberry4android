@@ -14,9 +14,4 @@ public interface ToDoTaskDetailsView extends MvpView {
 
   @StateStrategyType(AddToEndSingleStrategy.class)
   void setMode(boolean edit, boolean isNew);
-
-  void onToDoTaskSaved();
-
-  void onToDoTaskDeleted();
-
 }

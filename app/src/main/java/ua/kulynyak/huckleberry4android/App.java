@@ -22,4 +22,8 @@ public class App extends Application {
     return self.appComponent;
   }
 
+  public static App getApp() {
+    return self;
+  }
+
 }

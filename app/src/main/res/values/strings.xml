@@ -8,4 +8,7 @@
   <string name="save">Save</string>
   <string name="delete">Delete</string>
   <string name="search">Search</string>
+  <string name="task_deleted">ToDo task deleted</string>
+  <string name="task_updated">ToDo task updated</string>
+  <string name="task_created">ToDo task created</string>
 </resources>

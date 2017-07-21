@@ -83,11 +83,6 @@ public class ToDoTaskDetailsFragment extends MvpFragment
     return editMode ? EDIT_BG_COLOR : VIEW_BG_COLOR;
   }
 
-  private void lockButtons() {
-    btnDelete.setEnabled(false);
-    btnEditSave.setEnabled(false);
-  }
-
   @Override
   public void showToDoTask(ToDoTask task) {
     etTitle.setText(task.getTitle());
@@ -133,20 +128,6 @@ public class ToDoTaskDetailsFragment extends MvpFragment
 
     btnDelete.setEnabled(!isNew);
     UiUtils.hideKeyboardFrom(getActivity(), getView());
-  }
-
-  @Override
-  public void onToDoTaskSaved() {
-    updateControls(false, false);
-  }
-
-  @Override
-  public void onToDoTaskDeleted() {
-    etTitle.setText("Deleted");
-    cbDone.setChecked(false);
-    etDescription.setText("");
-    updateControls(false, true);
-    lockButtons();
   }
 
   @Override
