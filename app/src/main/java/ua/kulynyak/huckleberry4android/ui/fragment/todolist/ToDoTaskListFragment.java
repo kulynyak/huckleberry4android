@@ -1,13 +1,16 @@
 package ua.kulynyak.huckleberry4android.ui.fragment.todolist;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.*;
 import android.widget.ProgressBar;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import com.arellomobile.mvp.MvpFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import ua.kulynyak.huckleberry4android.R;
@@ -28,9 +31,13 @@ public class ToDoTaskListFragment extends MvpFragment
   @InjectPresenter
   ToDoTasksSearchPresenter searchPresenter;
 
-  private ProgressBar progressBar;
-  private RecyclerView rvToDoList;
+  @BindView(R.id.progressBar)
+  ProgressBar progressBar;
+  @BindView(R.id.rvToDoList)
+  RecyclerView rvToDoList;
   private SearchView searchView;
+
+  private Unbinder unbinder;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,14 +48,18 @@ public class ToDoTaskListFragment extends MvpFragment
     }
   }
 
+  @OnClick(R.id.fabAddItem)
+  void onNewToDoTaskClicked() {
+    presenter.showTask(-1, true);
+  }
+
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                            Bundle savedInstanceState) {
     View rootView = inflater.inflate(R.layout.todo_list, container, false);
-    progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+    unbinder = ButterKnife.bind(this, rootView);
     progressBar.setVisibility(View.GONE);
-    rvToDoList = (RecyclerView) rootView.findViewById(R.id.rvToDoList);
     rvToDoList.setVisibility(View.VISIBLE);
     rvToDoList.setAdapter(new ToDoListAdapter());
     ItemClickSupport.addTo(rvToDoList)
@@ -58,14 +69,13 @@ public class ToDoTaskListFragment extends MvpFragment
             presenter.showTask(position, false);
           }
         });
-    FloatingActionButton fabAddItem = (FloatingActionButton) rootView.findViewById(R.id.fabAddItem);
-    fabAddItem.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        presenter.showTask(-1, true);
-      }
-    });
     return rootView;
+  }
+
+  @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    unbinder.unbind();
   }
 
   @Override
